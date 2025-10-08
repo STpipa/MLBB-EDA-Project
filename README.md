@@ -23,12 +23,14 @@ El análisis se centra en identificar patrones de rendimiento, correlaciones ent
 | **Visualización** | `matplotlib`, `seaborn` | Creación de gráficos estadísticos de alto impacto. |
 
 ## ⚙️ Estructura del Repositorio
-| **MLBB-EDA-Project**
-| **eda_mobilelegends.py**    | # Script de Extracción y Limpieza (Pipeline ETL)
-| **eda_analysis.py**         | # Script principal para la visualización y el EDA
-| **config.py**               | # Contiene la variable API_BASE_URL
-| **mobile_legends_data.csv** | # OUTPUT: Dataset limpio y listo para el análisis
-| **README.md**               | # Este documento
+
+| Archivo/Directorio             | Descripción                                           |
+|--------------------------------|-------------------------------------------------------|
+| `eda_mobilelegends.py`         | Script de extracción y limpieza (Pipeline ETL).        |
+| `eda_analysis.py`              | Script principal para visualización y EDA.             |
+| `config.py`                    | Contiene la variable `API_BASE_URL`.                  |
+| `mobile_legends_data.csv`      | Dataset limpio y listo para el análisis (output).      |
+| `README.md`                    | Documentación del proyecto (este archivo).             |
 
 
 ## 🚀 Fase de Extracción de Datos (ETL)

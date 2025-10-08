@@ -2,6 +2,8 @@
 import requests
 import pandas as pd
 import time
+import os
+from datetime import datetime
 from config import API_BASE_URL 
 
 # --- FUNCIONES AUXILIARES ---
@@ -85,7 +87,7 @@ def data_extraction_pipeline():
         print("\n❌ Extracción de Posiciones fallida. No se puede continuar.")
         return None
     
-    # --- CORRECCIÓN CRUCIAL: DESANIDAR EL DATAFRAME ---
+    
     # Convertimos la columna 'data' (que contiene un diccionario) en nuevas columnas
     # Esto expone 'hero_id', 'role', 'lane', etc., como columnas principales.
     try:
@@ -94,7 +96,7 @@ def data_extraction_pipeline():
     except Exception as e:
         print(f"❌ Error al desanidar el DataFrame de Posiciones: {e}")
         return None
-    # --- FIN DE LA CORRECCIÓN ---
+    
     
     print(f"\n✔️ Extracción de posiciones exitosa. Héroes encontrados: {len(df_positions)}.")
 
@@ -129,9 +131,27 @@ def data_extraction_pipeline():
 
         print(f"✔️ Combinación (Merge) exitosa. Filas finales (Héroes únicos): {len(df_final)}")
         
-        # 4. Guardado de los datos limpios
+        # 4. Guardado de los datos limpios en modo histórico
+        
+        # 4a. Añadir columna de fecha de extracción para el seguimiento
+        df_final['extraction_date'] = datetime.now().strftime('%Y-%m-%d')
+
+        # 4b. Lógica de guardado en modo APPEND al archivo histórico
+        historica_file = "mobile_legends_data_historical.csv"
+
+        if not os.path.exists(historica_file):
+            # Primera vez: crear el archivo con encabezados
+            df_final.to_csv(historica_file, mode='w', index=False, header=True)
+            print(f"💾 Archivo histórico creado: '{historica_file}'")
+
+        else:
+            # Si ya existe, agregar datos sin repetir encabezados
+            df_final.to_csv(historica_file, mode='a', index=False, header=False)
+            print(f"💾 Datos agregados al archivo histórico: '{historica_file}'")
+
+        # 4c. Guardar también la version más reciente para el EDA rápido (sobre-escribe)
         df_final.to_csv("mobile_legends_data.csv", index=False)
-        print("💾 Datos combinados y limpios guardados en 'mobile_legends_data.csv'")
+        print("💾 Datos recientes guardados en 'mobile_legends_data.csv' para el EDA inmediato")
 
         return df_final
         

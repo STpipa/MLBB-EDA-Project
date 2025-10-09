@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import os
 import ast # Necesario para parsear las cadenas JSON anidadas
 
 # Configuración inicial para mejorar la apariencia de los gráficos
@@ -94,7 +95,7 @@ def analyze_win_rate_by_role():
     plt.xlabel('Rol Principal', fontsize=12)
     plt.ylabel('Tasa de Victoria Promedio (%)', fontsize=12)
     plt.ylim(role_performance.values.min() - 1, role_performance.values.max() + 2)
-    plt.savefig()
+    plt.savefig("reports/win_rate_by_role.png")
     plt.show()
 
 # --- ANÁLISIS 2: Win Rate por Línea (Lane) ---
@@ -138,7 +139,7 @@ def analyze_win_rate_by_lane():
     plt.title('Distribución de Tasa de Victoria (Win Rate) por Línea de Juego', fontsize=16, pad=20)
     plt.xlabel('Línea (Lane)', fontsize=12)
     plt.ylabel('Tasa de Victoria (%)', fontsize=12)
-    plt.savefig()
+    plt.savefig("reports/win_rate_by_lane.png")
     plt.show()
 
     # eda_analysis.py (Añade esta función)
@@ -220,7 +221,7 @@ def analyze_ban_vs_win_rate():
     plt.title('Win Rate vs. Ban Rate: Identificando Héroes de Meta (Meta-Dominance)', fontsize=16, pad=20)
     plt.xlabel('Tasa de Ban (Ban Rate - %)', fontsize=12)
     plt.ylabel('Tasa de Victoria (Win Rate - %)', fontsize=12)
-    plt.savefig()
+    plt.savefig("reports/ban_vs_win_rate.png")
     plt.show()
 
 

@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+from datetime import datetime
 import os
 import ast # Necesario para parsear las cadenas JSON anidadas
 
@@ -98,6 +99,9 @@ def analyze_win_rate_by_role():
     plt.savefig("reports/win_rate_by_role.png")
     plt.show()
 
+    current_date = datetime.now().strftime('%Y%m%d')
+    file_name = f"reports/{current_date}_win_rate_by_role.png"
+    plt.savefig(file_name)
 # --- ANÁLISIS 2: Win Rate por Línea (Lane) ---
 
 def analyze_win_rate_by_lane():
@@ -142,7 +146,9 @@ def analyze_win_rate_by_lane():
     plt.savefig("reports/win_rate_by_lane.png")
     plt.show()
 
-    # eda_analysis.py (Añade esta función)
+    current_date = datetime.now().strftime('%Y%m%d')
+    file_name = f"reports/{current_date}_win_rate_by_lane.png"
+    plt.savefig(file_name)
 
 # --- ANÁLISIS 3: Gráfico de Dispersión (Scatter Plot) de Ban vs. Win Rate ---
 
@@ -202,6 +208,10 @@ def analyze_ban_vs_win_rate():
         palette="coolwarm",
         legend=False
     )
+
+    current_date = datetime.now().strftime('%Y%m%d')
+    file_name = f"reports/{current_date}_ban_vs_win_rate.png"
+    plt.savefig(file_name)
     
     # 4. Etiquetado de héroes clave (los top 3 o los más relevantes)
     

@@ -26,7 +26,8 @@ def extract_latest_win_rate(data_str):
     try:
         data_dict = ast.literal_eval(data_str)
         if 'win_rate' in data_dict and data_dict['win_rate']:
-            return data_dict['win_rate'][-1].get('win_rate')
+            if data_dict['win_rate']:
+                return data_dict['win_rate'][-1].get('win_rate')
         return np.nan
     except Exception:
         return np.nan
@@ -67,6 +68,7 @@ def load_data(file_path):
                        'hero.data.sortid': 'raw_roles'}, inplace=True)
                        
     df['role'] = df['raw_roles'].apply(extract_roles) # Crea la columna 'role'
+    df['primary_role'] = df['role'].apply(lambda x: x.split(',')[0].strip())
     
     # 3. Conversiones y limpieza final
     df['win_rate_pct'] = df['win_rate'] * 100
@@ -101,6 +103,119 @@ def run_dashboard():
     
     latest_date = df['extraction_date'].max().date()
     st.info(f"Mostrando datos hasta la última fecha de extracción: **{latest_date}**")
+
+    tab1, tab2, tab3 = st.tabs(["📊 Análisis del Meta", "📈 Tendencia Semanal", "🔍 Detalle por Héroe"])
+
+    with tab1:
+        st.header("Meta Actual: Dominancia y Balance")
+
+        # 1. Scatter Plot
+        st.header("Gráfico 1: Dominancia del Meta (Win Rate vs Ban Rate)")
+        df_current = df[df['extraction_date'].dt.date == latest_date].copy()
+
+        # 2. Comparativa de Roles (Win Rate Promedio)
+        df['primary_role'] = df['role'].apply(lambda x: x.split(',')[0].strip())
+        df_role_winrate = df.groupby('primary_role')['win_rate_pct'].mean().reset_index()
+
+        st.subheader("Win Rate Promedio por Rol")
+        fig_role = px.bar(
+            df_role_winrate.sort_values(by='win_rate_pct', ascending=False),
+            x='primary_role',
+            y='win_rate_pct',
+            color='win_rate_pct',
+            title='Roles más Efectivos en el Meta Actual',
+            text_auto='.2s'
+        )   
+        st.plotly_chart(fig_role, use_container_width=True)
+
+
+    with tab2:
+        st.header("Resumen del Meta y Tendencias Clave")
+
+        # Aseguramos la ruta del archivo de reporte más reciente
+        # Esto asume que el reporte se corre el mismo día de la última extracción
+        latest_report_date = df['extraction_date'].max().strftime('%Y%m%d') 
+        report_file_path = f"reports/reporte_tendencia_{latest_report_date}.txt"
+    
+        try:
+            with open(report_file_path, 'r', encoding='utf-8') as f:
+                report_content = f.read()
+
+            st.text_area("Reporte de Tendencia Generado:", value=report_content, height=500)
+
+        except FileNotFoundError:
+            st.warning(f"⚠️ Reporte de tendencia ({report_file_path}) no encontrado. Asegúrate de haber ejecutado 'python reporting.py'.")
+
+            # Asumiendo que has generado un reporte para la fecha más reciente (df.max())
+            latest_report_date = df['extraction_date'].max().strftime('%Y%m%d')
+            report_file_path = f"reports/reporte_tendencia_{latest_report_date}.txt"
+        
+            with open(report_file_path, 'r', encoding='utf-8') as f:
+                report_content = f.read()
+        
+            st.code(report_content) # Muestra el texto formateado
+        except FileNotFoundError:
+            st.warning("El reporte de tendencia más reciente no ha sido generado. Ejecuta 'reporting.py'.")
+
+    with tab3:
+        st.header("Detalle y Perfil del Héroe")
+    
+        hero_list = sorted(df['hero_name'].unique())
+        selected_hero = st.selectbox("Selecciona un Héroe", hero_list)
+        
+        df_hero = df[df['hero_name'] == selected_hero].copy()
+
+        if not df_hero.empty:
+
+            # 1. Preparación de Métricas
+            # Ordenamos por fecha para asegurar que la última es la más reciente
+            df_hero.sort_values(by='extraction_date', inplace=True)
+            latest_metrics = df_hero.iloc[-1]
+
+            # 2. Cálculo del Delta (Cambio vs. fecha anterior)
+            # Filtramos las dos últimas fechas disponibles para el héroe
+            df_hero_history = df_hero.nlargest(2, 'extraction_date')
+            change = 0.0 
+
+            if len(df_hero_history) == 2:
+                win_rate_latest = df_hero_history.iloc[-1]['win_rate_pct']
+                win_rate_previous = df_hero_history.iloc[0]['win_rate_pct']
+                change = win_rate_latest - win_rate_previous
+
+            # 3. Mostrar Metricas Clave (usando st.metric)
+            col_metrics_1, col_metrics_2, col_metrics_3 = st.columns(3)
+
+            with col_metrics_1:
+                st.metric("Win Rate Actual", f"{latest_metrics['win_rate_pct']:.2f}%")
+
+            with col_metrics_2:
+                st.metric("Ban Rate Actual", f"{latest_metrics['ban_rate_pct']:.2f}%")
+
+            with col_metrics_3:
+                st.metric("Rol Principal", latest_metrics['role'].split(',')[0])
+
+            # 4. Gráfico de Línea de Tendencia (Win Rate histórico del héroe)
+            st.subheader(f"Evolución del Win Rate de {selected_hero}")
+
+            fig_trend = px.line(
+                df_hero, 
+                x='extraction_date', 
+                y='win_rate_pct', 
+                title='Tendencia Histórica de {selected_hero}',
+                markers=True # Mostrar puntos para cada extracción
+            )
+
+            # Añadir una línea horizontal para el Win Rate promedio general para contexto
+            avg_win_rate = df['win_rate_pct'].mean()
+            fig_trend.add_hline(y=avg_win_rate, line_dash="dash", line_color="red",
+                                annotation_text=f"Promedio Meta ({avg_win_rate:.2f}%)") 
+
+            st.plotly_chart(fig_trend, use_container_width=True)
+
+        else:
+            st.warning(f"No hay datos disponibles para el héroe seleccionado: {selected_hero}")
+
+        
 
     # Mostrar la data cruda (Botón de chequeo)
     if st.checkbox("Mostrar datos crudos para chequeo (última fecha)"):

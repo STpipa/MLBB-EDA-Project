@@ -13,7 +13,7 @@ def load_data(file_path):
     try:
         df = pd.read_csv(file_path)
     except FileNotFoundError:
-        st.error("Error: Archivo histórico 'mobile_legends_data_historical' no encontrado.")
+        st.error("Error: Archivo histórico 'mobile_legends_data_historical.csv' no encontrado.")
         return  pd.DataFrame()  # Retorna un DataFrame vacío en caso de error
     
     
@@ -30,15 +30,35 @@ def load_data(file_path):
             return np.nan
         except Exception:
             return np.nan
+    
+    # --- Esta Función Auxiliar para Ban Rate ---
         
+    def extract_latest_ban_rate(data_str):
+        if not isinstance(data_str, str) or pd.isna(data_str):
+            return np.nan
+        try:
+            data_dict = ast.literal_eval(data_str)
+            if 'win_rate' in data_dict and data_dict['win_rate']:
+                latest_record = data_dict['win_rate'][-1]
+                return latest_record.get('ban_rate')
+            return np.nan
+        except Exception:
+            return np.nan
+
+
+
     # Aplicar extracción
     df['win_rate'] = df['data'].apply(extract_latest_win_rate)
+    df['ban_rate'] = df['data'].apply(extract_latest_ban_rate)
+
+    # Aplicar conversiones
     df['win_rate_pct'] = df['win_rate'] * 100.0
+    df['ban_rate_pct'] = df['ban_rate'] * 100.0
     df.rename(columns={'hero.data.name': 'hero_name'}, inplace=True)
     df['extraction_date'] = pd.to_datetime(df['extraction_date'])
 
     # Seleccionamos las columnas útiles
-    df_clean = df[['hero_name', 'win_rate_pct', 'extraction_date']].copy()
+    df_clean = df[['hero_name', 'win_rate_pct', 'ban_rate_pct','extraction_date', 'hero.data.sortid']].copy()
     df_clean.dropna(inplace=True)
 
     return df_clean
@@ -84,6 +104,37 @@ def run_dashboard():
     fig_hist = px.histogram(df[df['extraction_date']==latest_date],x='win_rate_pct',
                             title='Distribución del Win Rate de Héroes hoy')
     st.plotly_chart(fig_hist, use_container_width=True)
+
+    st.header("Gráfico 1: Dominancia del Meta (Win Rate vs Ban Rate)")
+
+    # Nos enfocamos en la fecha más reciente para el scatter plot
+    latest_date = df['extraction_date'].max()
+    df_current = df[df['extraction_date'] == latest_date]
+
+    # Aseguramos de que las columnas necesarias existen
+    if 'ban_rate_pct' in df_current.columns and 'win_rate_pct' in df_current.columns:
+
+        fig = px.scatter(
+            df_current, 
+            x='ban_rate_pct', 
+            y='win_rate_pct', 
+            color='win_rate_pct', 
+            size='ban_rate_pct',
+            hover_name=['hero_name'], # Muestra el nombre del héroe al pasar el mouse
+            color_continuous_scale=px.colors.sequential.Sunset,
+            title=f'Héroes Meta: Tasa de Victoria vs. Tasa de Ban (Datos al {latest_date.date()})'
+        )            
+
+        fig.update_layout(
+            xaxis_title='Tasa de Ban (%)',
+            yaxis_title='Tasa de Victoria (%)',
+            height=600
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
+
+    else:
+        st.warning("No se pudo generar el gráfico de Scatter: Faltan las columnas 'ban_rate_pct' o 'win_rate_pct'.")
 
     # --- 3. EJECUCIÓN DEL DASHBOARD ---
     if __name__ == "__main__":

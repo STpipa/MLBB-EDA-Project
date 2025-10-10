@@ -1,0 +1,12 @@
+--- 📊 REPORTE DE TENDENCIAS MLBB (2025-10-09 a 2025-10-10) ---
+
+🏆 Mayor ganador (Gainer): Obsidia (Marksman)
+   - Subió 0.00 puntos porcentuales en Win Rate.
+
+💔 Mayor perdedor (Loser): Obsidia (Marksman)
+   - Cayó 0.00 puntos porcentuales en Win Rate.
+
+🚀 Rol en Ascenso: Marksman(cambio: 0.00%)
+
+⚠️ Rol en Descenso: Marksman(cambio: 0.00%)
+

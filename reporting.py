@@ -14,7 +14,7 @@ def extract_roles(roles_str):
         return "Unknown"
     try:
         roles_list = ast.literal_eval(roles_str)
-        roles = [item['data']['sort_tittle'] for item in roles_list if isinstance(item, dict) and 'data' in item]
+        roles = [item['data']['sort_title'] for item in roles_list if isinstance(item, dict) and 'data' in item]
         return ', '.join(roles) if roles else "Unknown"
     except Exception:
         return "Unknown"
@@ -39,7 +39,7 @@ def generate_weekly_report():
     Carga el historial, compara las dos ultimas fechas de extracción
     y genera un resumen de texto de las tendencias.
     """
-    historical_file = 'mobile_legends_data_historical.csv'
+    historical_file = 'D:/MLBB-EDA-Project/mobile_legends_data_historical.csv'
     if not os.path.exists(historical_file):
         print(f"Error: Archivo histórico '{historical_file}' no encontrado.")
         print("Asegúrate de ejecutar 'eda_mobilelegends.py' al menos dos veces para crear un historial.")
@@ -51,8 +51,21 @@ def generate_weekly_report():
 
     # 1. Limpieza y preparación de datos
     df['win_rate'] = df['data'].apply(extract_latest_win_rate)
-    df.rename(columns={'hero.data.sortid': 'raw_roles', 'hero.data.name': 'hero_name'}, inplace=True)
-    df['roles'] = df['raw_roles'].apply(extract_roles)
+
+    # 1.1 Renombrado y Creación de columna 'role'
+    col_mapping = {'hero.data.sortid': 'raw_roles', 'hero.data.name': 'hero_name'}
+
+    # Solo renombra si la columna existe para evitar errores
+    df.rename(columns={k: v for k, v in col_mapping.items() if k in df.columns}, inplace=True)
+
+    # La columna roles se crea ahora
+    if 'raw_roles' in df.columns:
+        df['role'] = df['raw_roles'].apply(extract_roles)
+    else:
+        # Esto sucede si 'hero.data.sortid' no se cargó o se renombró mal
+        print("❌ Error: Columna fuente de roles ('hero.data.sortid' o 'raw_roles') no encontrada.")
+        return
+
     df.dropna(subset=['win_rate', 'extraction_date'], inplace=True)
 
     # 2. Identificar las dos últimas fechas de extracción
@@ -73,8 +86,8 @@ def generate_weekly_report():
     print(f"Comparando datos del {previous_date.date()} con {latest_date.date()}...")
 
     # 3. Análisis de tendencia por rol
-    df_latest['primary_role'] = df_latest['roles'].apply(lambda x: x.split(',')[0].strip())
-    df_previous['primary_role'] = df_previous['roles'].apply(lambda x: x.split(',')[0].strip())
+    df_latest['primary_role'] = df_latest['role'].apply(lambda x: x.split(',')[0].strip())
+    df_previous['primary_role'] = df_previous['role'].apply(lambda x: x.split(',')[0].strip())
 
     # Calcular Win Rate promedio por rol en ambas fechas
     role_latest = df_latest.groupby('primary_role')['win_rate'].mean().rename('win_rate_latest')

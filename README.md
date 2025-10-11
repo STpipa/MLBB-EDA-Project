@@ -49,8 +49,8 @@ La fase de extracción se completó con éxito, asegurando la recolección de 13
 Actualmente, estamos en la fase de **Análisis Exploratorio de Datos (EDA)**. Los primeros análisis incluyen:
 
 - [x] Análisis del Win Rate promedio por Rol.
-- [ ] Análisis de la distribución de Win Rate por Línea (Lane).
-- [ ] Gráfico de dispersión (Scatter Plot) de Ban Rate vs. Win Rate.
+- [x] Análisis de la distribución de Win Rate por Línea (Lane).
+- [x] Gráfico de dispersión (Scatter Plot) de Ban Rate vs. Win Rate.
 
 ---
 

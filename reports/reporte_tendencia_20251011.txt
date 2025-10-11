@@ -1,0 +1,12 @@
+--- 📊 REPORTE DE TENDENCIAS MLBB (2025-10-10 a 2025-10-11) ---
+
+🏆 Mayor ganador (Gainer): Balmond (fighter)
+   - Subió 0.38 puntos porcentuales en Win Rate.
+
+💔 Mayor perdedor (Loser): Freya (fighter)
+   - Cayó 0.44 puntos porcentuales en Win Rate.
+
+🚀 Rol en Ascenso: fighter(cambio: 0.05%)
+
+⚠️ Rol en Descenso: support(cambio: -0.05%)
+

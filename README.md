@@ -17,10 +17,12 @@ El análisis se centra en identificar patrones de rendimiento, correlaciones ent
 
 | Categoría | Herramienta | Propósito |
 | :--- | :--- | :--- |
-| **Lenguaje** | Python | Lenguaje principal de desarrollo y análisis. |
+| **Lenguaje** | `Python` | Lenguaje principal de desarrollo y análisis. |
 | **Extracción** | `requests` | Realizar peticiones HTTP a la API de estadísticas. |
 | **Manipulación** | `pandas` | Gestión, limpieza y transformación del DataFrame. |
-| **Visualización** | `matplotlib`, `seaborn` | Creación de gráficos estadísticos de alto impacto. |
+| **Visualización** | `matplotlib`, `seaborn`, `Plotly Express` | Creación de gráficos estadísticos de alto impacto. |
+| **Dashboarding** | `Streamlit` | Creación de la aplicación web interactiva. |
+
 
 ## ⚙️ Estructura del Repositorio
 
@@ -51,6 +53,23 @@ Actualmente, estamos en la fase de **Análisis Exploratorio de Datos (EDA)**. Lo
 - [ ] Gráfico de dispersión (Scatter Plot) de Ban Rate vs. Win Rate.
 
 ---
+
+## 📊  MLBB Meta Dashboard (Streamlit)
+
+Este proyecto culmina con un **Dashboard Interactivo de Streamlit** que permite a los usuarios:
+
+1.  **Explorar la Dominancia del Meta:** Visualización de la relación entre el Win Rate y el Ban Rate de los héroes más recientes.
+2.  **Análisis por Roles y Líneas:** Desglose del rendimiento (Win Rate) por Roles (Tank, Mage, etc.) y Líneas de Juego (EXP, Gold, etc.).
+3.  **Detalle del Héroe:** Búsqueda individual de héroes para visualizar su tendencia histórica de Win Rate y sus métricas clave.
+
+## ⏭️ Próximos Pasos / Mejora Continua
+
+Las áreas de mejora futuras para el proyecto incluyen:
+
+* **Implementación de Predicción:** Aplicar modelos de Series de Tiempo (como ARIMA) para proyectar el Win Rate futuro de los héroes.
+* **Análisis Multivariado:** Estudiar la correlación entre las estadísticas de items y talentos (Emblems) con el rendimiento final del héroe.
+* **Automatización (CI/CD):** Configurar GitHub Actions para actualizar automáticamente los datos de la API y desplegar el dashboard de Streamlit.
+
 
 ## 🤝 Atribución y Licencia
 

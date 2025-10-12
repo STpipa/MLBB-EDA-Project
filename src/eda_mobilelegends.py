@@ -32,8 +32,8 @@ def fetch_data(endpoint):
         print(f"❌ Error al conectar con la API en /{endpoint}: {e}")
         return None
 
-def extract_list_from_api_response(raw_json, endpoint_name):
-    """
+def extract_list_from_api_response(raw_json, _endpoint_name):
+    """ 
     Extrae la lista de registros de un JSON de API, probando el patrón conocido.
     """
     if not raw_json:
@@ -146,10 +146,11 @@ def data_extraction_pipeline():
         df_final['extraction_date'] = datetime.now().strftime('%Y-%m-%d')
 
         # 4b. Lógica de guardado en modo APPEND al archivo histórico
-        historica_file_path = "../data/mobile_legends_data_historical.csv"
+        data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data'))
+        historica_file_path = os.path.join(data_dir, "mobile_legends_data_historical.csv")
 
         # Aseguramos que la carpeta de datos exista
-        os.makedirs("../data", exist_ok=True)
+        os.makedirs(data_dir, exist_ok=True)
 
         if not os.path.exists(historica_file_path):
             # Primera vez: crear el archivo con encabezados

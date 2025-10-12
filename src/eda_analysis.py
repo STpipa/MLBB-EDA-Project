@@ -75,6 +75,14 @@ def load_and_preprocess_data(file_path: str) -> DataFrame:
         df['ban_rate_pct'] = df['ban_rate'] * 100
         
         df['extraction_date'] = pd.to_datetime(df['extraction_date'])
+
+        # 🧩 Crear la columna 'lane_clean' si existe alguna con ese dato
+        if 'lane' in df.columns:
+            df['lane_clean'] = df['lane'].str.strip().fillna('Desconocido')
+        elif 'data.lane' in df.columns:
+            df['lane_clean'] = df['data.lane'].str.strip().fillna('Desconocido')
+        else:
+            df['lane_clean'] = 'Desconocido'
         
         # Eliminar filas con valores nulos en columnas críticas para el análisis
         df_clean = df.dropna(subset=['hero_name', 'win_rate_pct', 'ban_rate_pct', 'primary_role']).copy()
@@ -88,8 +96,18 @@ def load_and_preprocess_data(file_path: str) -> DataFrame:
         print(f"Ocurrió un error al cargar o preprocesar los datos: {e}")
         return pd.DataFrame()
 
-def plot_win_rate_vs_ban_rate(df, current_date):
+def plot_win_rate_vs_ban_rate(df: DataFrame, current_date: str):
     """Genera un scatter plot de Win Rate vs Ban Rate y lo guarda."""
+    
+    if 'lane_clean' not in df.columns:
+        print("⚠️ Columna 'lane_clean' no encontrada. No se puede generar el gráfico por Línea.")
+        return
+    
+    df_grouped = df.groupby('lane_clean')['win_rate_pct'].mean().reset_index()
+
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x='lane_clean', y='win_rate_pct', data=df_grouped, hue='lane_clean', palette="rocket", legend=False)
+
     plt.figure(figsize=(12, 8))
     sns.scatterplot(
         data=df,
@@ -131,6 +149,39 @@ def plot_win_rate_by_role(df, current_date):
     plt.close()
     print(f"📊 Gráfico de Win Rate por Rol guardado en {os.path.join(REPORT_DIR, f'{current_date}_win_rate_by_role.png')}")
 
+def plot_win_rate_by_lane(df: DataFrame, current_date: str):
+    """
+    Calcula y grafica el Win Rate promedio por Línea (Lane).
+    """
+    # 1. Agrupar por la columna de Línea
+    # NOTA: Asegúrate que la columna 'lane_clean' o similar exista en tu DataFrame limpio.
+    if 'lane_clean' not in df.columns:
+        print("⚠️ Columna 'lane_clean' no encontrada. No se puede generar el gráfico por Línea.")
+        return
+
+    df_grouped = df.groupby('lane_clean')['win_rate_pct'].mean().reset_index()
+
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x='lane_clean', y='win_rate_pct', data=df_grouped, hue='lane_clean', palette="rocket", legend=False)
+    
+    # Añadir etiquetas de valor
+    for index, row in df_grouped.iterrows():
+        plt.text(index, row['win_rate_pct'] + 0.1, 
+                f"{row['win_rate_pct']:.2f}%", 
+                color='black', ha="center")
+
+    plt.title('Win Rate Promedio por Línea (Lane)')
+    plt.xlabel('Línea (Lane)')
+    plt.ylabel('Win Rate Promedio (%)')
+    plt.ylim(df_grouped['win_rate_pct'].min() * 0.9, df_grouped['win_rate_pct'].max() * 1.1)
+    plt.tight_layout()
+
+    # Guardar con el nombre solicitado: win_rate_by_lane.png
+    file_name = os.path.join(REPORT_DIR, f"{current_date}_win_rate_by_lane.png")
+    plt.savefig(file_name)
+    plt.close()
+    print(f"📊 Gráfico de Win Rate por Línea guardado en {file_name}")
+
 # ----------------------------------------------------
 # --- 4. FUNCIÓN PRINCIPAL DE EJECUCIÓN DEL ANÁLISIS ---
 # ----------------------------------------------------
@@ -157,7 +208,7 @@ def run_eda_analysis():
     # Generar y guardar los gráficos
     plot_win_rate_vs_ban_rate(df_latest, latest_date.strftime('%Y%m%d'))
     plot_win_rate_by_role(df_latest, latest_date.strftime('%Y%m%d'))
-    
+    plot_win_rate_by_lane(df_latest,latest_date.strftime('%Y%m%d'))
     print("EDA completado y gráficos generados.")
 
 # ----------------------------------------------------

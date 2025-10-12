@@ -5,9 +5,9 @@ from datetime import datetime
 import os
 
 # --- 1. CONFIGURACIÓN ---
-# CRÍTICO: Ruta relativa al archivo de datos, sube un nivel (..) y entra a 'data/'
+# Ruta relativa al archivo de datos, sube un nivel (..) y entra a 'data/'
 DATA_FILE_PATH = "../data/mobile_legends_data_historical.csv"
-REPORT_OUTPUT_DIR = "../reports" # Carpeta para guardar los reportes de texto
+REPORT_OUTPUT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'reports'))
 
 # Asegurarse de que la carpeta de reportes exista
 os.makedirs(REPORT_OUTPUT_DIR, exist_ok=True)
@@ -63,7 +63,7 @@ def load_and_preprocess_data(file_path):
         df['ban_rate'] = df['data'].apply(extract_latest_ban_rate)
         
         df.rename(columns={'hero.data.name': 'hero_name',
-                           'hero.data.sortid': 'raw_roles'}, inplace=True)
+                        'hero.data.sortid': 'raw_roles'}, inplace=True)
         
         df['role'] = df['raw_roles'].apply(extract_roles)
         df['primary_role'] = df['role'].apply(lambda x: x.split(',')[0].strip())
@@ -129,9 +129,9 @@ def generate_report():
 
         # Fusionar para calcular el cambio
         df_merged = pd.merge(df_latest[['hero_name', 'win_rate_pct']], 
-                             df_previous[['hero_name', 'win_rate_pct']], 
-                             on='hero_name', 
-                             suffixes=('_latest', '_previous'))
+                        df_previous[['hero_name', 'win_rate_pct']], 
+                        on='hero_name', 
+                        suffixes=('_latest', '_previous'))
         
         df_merged['win_rate_change'] = df_merged['win_rate_pct_latest'] - df_merged['win_rate_pct_previous']
         

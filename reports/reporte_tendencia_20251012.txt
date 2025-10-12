@@ -1,0 +1,20 @@
+--- Reporte de Tendencia del Meta de MLBB (2025-10-12) ---
+
+Este reporte analiza los cambios más significativos en el meta del juego.
+
+
+### 👑 Top 5 Héroes por Tasa de Victoria:
+- Diggie: 57.77% Win Rate (support)
+- Diggie: 57.77% Win Rate (support)
+- Diggie: 57.77% Win Rate (support)
+- Natan: 57.12% Win Rate (Marksman)
+- Natan: 57.12% Win Rate (Marksman)
+
+### 🚫 Top 5 Héroes por Tasa de Ban:
+- Angela: 89.22% Ban Rate (support)
+- Angela: 89.22% Ban Rate (support)
+- Angela: 89.22% Ban Rate (support)
+- Yi Sun-shin: 63.07% Ban Rate (assassin)
+- Yi Sun-shin: 63.07% Ban Rate (assassin)
+
+No hay suficientes datos históricos para calcular cambios de Win Rate.

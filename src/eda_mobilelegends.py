@@ -3,8 +3,17 @@ import requests
 import pandas as pd
 import time
 import os
+import sys
 from datetime import datetime
-from config import API_BASE_URL 
+
+
+# Obtener la ruta del directorio padre
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+# Añadir el directorio padre al path de Python para que pueda encontrar la carpeta 'config/'
+sys.path.append(parent_dir)
+
+from config.config import API_BASE_URL
 
 # --- FUNCIONES AUXILIARES ---
 
@@ -99,7 +108,7 @@ def data_extraction_pipeline():
     
     
     print(f"\n✔️ Extracción de posiciones exitosa. Héroes encontrados: {len(df_positions)}.")
-
+    
     # 2. **GENERACIÓN DE ID:** Creamos la lista de IDs secuenciales (1 a 130)
     hero_ids = list(range(1, 131)) 
     df_rates = fetch_all_hero_rates(hero_ids)
@@ -168,4 +177,4 @@ if __name__ == "__main__":
     
     if final_dataframe is not None:
         print("\n✅ ¡LA EXTRACCIÓN HA FINALIZADO CON ÉXITO!")
-        print("El archivo 'mobile_legends_data.csv' es tu fuente de datos lista para el EDA.")
+        print("El archivo 'mobile_legends_data_historical.csv' es tu fuente de datos lista para el EDA.")

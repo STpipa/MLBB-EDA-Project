@@ -5,10 +5,11 @@ import numpy as np
 import ast # Para parsear strings de listas/diccionarios
 from datetime import datetime
 import os
+from pandas import DataFrame
 
 # --- 1. CONFIGURACIÓN ---
 DATA_FILE_PATH = "../data/mobile_legends_data_historical.csv"
-REPORT_DIR = "../reports" # Carpeta para guardar los reportes/gráficos
+REPORT_DIR = "D:/MLBB-EDA-Project/reports" # Carpeta para guardar los reportes/gráficos
 
 # Asegurarse de que la carpeta de reportes exista
 os.makedirs(REPORT_DIR, exist_ok=True)
@@ -57,7 +58,7 @@ def extract_latest_ban_rate(data_str):
 # --- 3. FUNCIONES DE ANÁLISIS Y VISUALIZACIÓN ---
 # ----------------------------------------------------
 
-def load_and_preprocess_data(file_path):
+def load_and_preprocess_data(file_path: str) -> DataFrame:
     try:
         df = pd.read_csv(file_path)
         # Aplicar las funciones de extracción para limpiar las columnas 'data' y 'hero.data.sortid'
@@ -65,7 +66,7 @@ def load_and_preprocess_data(file_path):
         df['ban_rate'] = df['data'].apply(extract_latest_ban_rate)
         
         df.rename(columns={'hero.data.name': 'hero_name',
-                           'hero.data.sortid': 'raw_roles'}, inplace=True)
+                        'hero.data.sortid': 'raw_roles'}, inplace=True)
         
         df['role'] = df['raw_roles'].apply(extract_roles)
         df['primary_role'] = df['role'].apply(lambda x: x.split(',')[0].strip()) # Para agrupar por rol principal
@@ -104,7 +105,7 @@ def plot_win_rate_vs_ban_rate(df, current_date):
     top_heroes = df.nlargest(5, 'win_rate_pct')
     for i, row in top_heroes.iterrows():
         plt.text(row['ban_rate_pct'] + 0.5, row['win_rate_pct'], row['hero_name'], 
-                 fontsize=9, weight='bold')
+                fontsize=9, weight='bold')
 
     plt.title(f'Win Rate vs Ban Rate de Héroes (Al {current_date})', fontsize=16)
     plt.xlabel('Tasa de Ban (%)', fontsize=12)
@@ -119,7 +120,7 @@ def plot_win_rate_vs_ban_rate(df, current_date):
 def plot_win_rate_by_role(df, current_date):
     """Genera un box plot del Win Rate por rol principal y lo guarda."""
     plt.figure(figsize=(12, 8))
-    sns.boxplot(data=df, x='primary_role', y='win_rate_pct', palette='coolwarm')
+    sns.boxplot(data=df, x='primary_role', y='win_rate_pct', hue='primary_role', palette='coolwarm', legend=False)
     plt.title(f'Distribución de Win Rate por Rol Principal (Al {current_date})', fontsize=16)
     plt.xlabel('Rol Principal', fontsize=12)
     plt.ylabel('Tasa de Victoria (%)', fontsize=12)

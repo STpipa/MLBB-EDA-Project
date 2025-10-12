@@ -5,6 +5,22 @@ import ast
 import numpy as np
 from datetime import datetime
 import os
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from pandas import DataFrame 
+
+# ----------------------------------------------------------------------
+# --- CONFIGURACIÓN CRÍTICA DE RUTAS ---
+# ----------------------------------------------------------------------
+
+# Se asume la estructura del proyecto: src/ (este archivo), data/, reports/
+REPORT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'reports'))
+DATA_DIR_RELATIVE = '../data' 
+DATA_FILE_NAME = 'mobile_legends_data_historical.csv'
+
+# ----------------------------------------------------------------------
+# --- 1. FUNCIONES AUXILIARES GLOBALES Y LIMPIEZA (Corregidas) ---
+# ----------------------------------------------------------------------
 
 # ----------------------------------------------------
 # --- 1. FUNCIONES AUXILIARES GLOBALES ---
@@ -48,10 +64,10 @@ def extract_latest_ban_rate(data_str):
 # ----------------------------------------------------
 
 @st.cache_data 
-def load_data(file_path='mobile_legends_data_historical.csv'):
+def load_data(file_path='data/mobile_legends_data_historical.csv'):
     """ Carga y aplica limpieza básica al dataset historico. """
     try:
-        df = pd.read_csv(f"../data/{file_path}")
+        df = pd.read_csv(file_path)
     except FileNotFoundError:
         st.error(f"❌ Error: Archivo histórico '{file_path}' no encontrado.")
         st.info("Asegúrate de ejecutar 'eda_mobilelegends.py' al menos una vez.")
@@ -65,8 +81,8 @@ def load_data(file_path='mobile_legends_data_historical.csv'):
     
     # 2. Renombrar columnas clave y crear la columna de rol
     df.rename(columns={'hero.data.name': 'hero_name', 
-                       'hero.data.sortid': 'raw_roles'}, inplace=True)
-                       
+                    'hero.data.sortid': 'raw_roles'}, inplace=True)
+                    
     df['role'] = df['raw_roles'].apply(extract_roles) # Crea la columna 'role'
     df['primary_role'] = df['role'].apply(lambda x: x.split(',')[0].strip())
     
@@ -77,7 +93,7 @@ def load_data(file_path='mobile_legends_data_historical.csv'):
 
     # Seleccionamos las columnas útiles y limpiamos NaN
     df_clean = df[['hero_name', 'win_rate_pct', 'ban_rate_pct', 
-                   'extraction_date', 'role']].copy()
+                'extraction_date', 'role']].copy()
     df_clean.dropna(subset=['win_rate_pct', 'ban_rate_pct'], inplace=True)
 
     return df_clean

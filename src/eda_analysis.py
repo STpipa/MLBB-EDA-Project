@@ -7,7 +7,6 @@ from datetime import datetime
 import os
 
 # --- 1. CONFIGURACIÓN ---
-# CRÍTICO: Ruta relativa al archivo de datos, sube un nivel (..) y entra a 'data/'
 DATA_FILE_PATH = "../data/mobile_legends_data_historical.csv"
 REPORT_DIR = "../reports" # Carpeta para guardar los reportes/gráficos
 

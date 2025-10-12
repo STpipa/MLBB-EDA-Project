@@ -48,10 +48,10 @@ def extract_latest_ban_rate(data_str):
 # ----------------------------------------------------
 
 @st.cache_data 
-def load_data(file_path):
+def load_data(file_path='mobile_legends_data_historical.csv'):
     """ Carga y aplica limpieza básica al dataset historico. """
     try:
-        df = pd.read_csv(file_path)
+        df = pd.read_csv(f"../data/{file_path}")
     except FileNotFoundError:
         st.error(f"❌ Error: Archivo histórico '{file_path}' no encontrado.")
         st.info("Asegúrate de ejecutar 'eda_mobilelegends.py' al menos una vez.")
@@ -92,7 +92,7 @@ def run_dashboard():
 
     # 3.1 Cargar datos
     
-    df = load_data('mobile_legends_data_historical.csv')
+    df = load_data('D:/MLBB-EDA-Project/data/mobile_legends_data_historical.csv')
     
     if df.empty:
         return # Si no se cargaron datos (por FileNotFoundError), salimos

@@ -137,21 +137,24 @@ def data_extraction_pipeline():
         df_final['extraction_date'] = datetime.now().strftime('%Y-%m-%d')
 
         # 4b. Lógica de guardado en modo APPEND al archivo histórico
-        historica_file = "mobile_legends_data_historical.csv"
+        historica_file_path = "../data/mobile_legends_data_historical.csv"
 
-        if not os.path.exists(historica_file):
+        # Aseguramos que la carpeta de datos exista
+        os.makedirs("../data", exist_ok=True)
+
+        if not os.path.exists(historica_file_path):
             # Primera vez: crear el archivo con encabezados
-            df_final.to_csv(historica_file, mode='w', index=False, header=True)
-            print(f"💾 Archivo histórico creado: '{historica_file}'")
+            df_final.to_csv(historica_file_path, mode='w', index=False, header=True)
+            print(f"💾 Archivo histórico creado: '{historica_file_path}'")
 
         else:
             # Si ya existe, agregar datos sin repetir encabezados
-            df_final.to_csv(historica_file, mode='a', index=False, header=False)
-            print(f"💾 Datos agregados al archivo histórico: '{historica_file}'")
+            df_final.to_csv(historica_file_path, mode='a', index=False, header=False)
+            print(f"💾 Datos agregados al archivo histórico: '{historica_file_path}'")
 
         # 4c. Guardar también la version más reciente para el EDA rápido (sobre-escribe)
-        df_final.to_csv("mobile_legends_data.csv", index=False)
-        print("💾 Datos recientes guardados en 'mobile_legends_data.csv' para el EDA inmediato")
+        df_final.to_csv("../data/mobile_legends_data.csv", index=False) 
+        print("💾 Datos recientes guardados en '../data/mobile_legends_data.csv' para el EDA inmediato")
 
         return df_final
         

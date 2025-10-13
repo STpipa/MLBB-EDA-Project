@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 # Se asume la estructura del proyecto: src/ (este archivo), data/, reports/
 REPORT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'reports'))
 DATA_DIR_RELATIVE = '../data' 
-DATA_FILE_NAME = 'mobile_legends_data_historical.csv'
+DATA_FILE_NAME = os.path.join(os.path.dirname(__file__), "data", "mobile_legends_data_historical.csv")
 
 # ----------------------------------------------------------------------
 # --- 1. FUNCIONES AUXILIARES GLOBALES Y LIMPIEZA (Corregidas) ---

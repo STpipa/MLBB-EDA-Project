@@ -4,16 +4,20 @@ import ast
 from datetime import datetime
 import os
 
-# --- 1. CONFIGURACIÓN ---
+# ----------------------------------------------------
+# ------------- 1. CONFIGURACIÓN ---------------------
+# ----------------------------------------------------
+
 # Ruta relativa al archivo de datos, sube un nivel (..) y entra a 'data/'
-DATA_FILE_PATH = "../data/mobile_legends_data_historical.csv"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_FILE_PATH = os.path.join(BASE_DIR, "..", "data", "mobile_legends_data_historical.csv")
 REPORT_OUTPUT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'reports'))
 
 # Asegurarse de que la carpeta de reportes exista
 os.makedirs(REPORT_OUTPUT_DIR, exist_ok=True)
 
 # ----------------------------------------------------
-# --- 2. FUNCIONES AUXILIARES DE PARSEO (REUTILIZAMOS LÓGICA DEL EDA) ---
+# ------ 2. FUNCIONES AUXILIARES DE PARSEO -----------
 # ----------------------------------------------------
 
 def extract_roles(roles_str):
@@ -55,8 +59,10 @@ def extract_latest_ban_rate(data_str):
 # ----------------------------------------------------
 
 def load_and_preprocess_data(file_path):
+    print(f"\n🔍 Leyendo archivo desde: {os.path.abspath(file_path)}")
     try:
         df = pd.read_csv(file_path)
+        print("📅 Fechas únicas detectadas:", df['extraction_date'].unique())
         
         # Aplicar las funciones de extracción
         df['win_rate'] = df['data'].apply(extract_latest_win_rate)

@@ -7,15 +7,18 @@ from datetime import datetime
 import os
 from pandas import DataFrame
 
-# --- 1. CONFIGURACIÓN ---
-DATA_FILE_PATH = "../data/mobile_legends_data_historical.csv"
-REPORT_DIR = "D:/MLBB-EDA-Project/reports" # Carpeta para guardar los reportes/gráficos
+# ----------------------------------------------------
+# ------------- 1. CONFIGURACIÓN ---------------------
+# ----------------------------------------------------
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_FILE_PATH = os.path.join(BASE_DIR,"..","data","mobile_legends_data_historical.csv")
+REPORT_DIR = os.path.abspath(os.path.join(BASE_DIR,"..","reports")) # Carpeta para guardar los reportes/gráficos
 
 # Asegurarse de que la carpeta de reportes exista
 os.makedirs(REPORT_DIR, exist_ok=True)
 
 # ----------------------------------------------------
-# --- 2. FUNCIONES AUXILIARES (REUTILIZADAS DEL EDA) ---
+# ----------- 2. FUNCIONES AUXILIARES ----------------
 # ----------------------------------------------------
 
 def extract_roles(roles_str):

@@ -1,4 +1,3 @@
-# eda_mobilelegends.py
 import requests
 import pandas as pd
 import time
@@ -39,7 +38,7 @@ def extract_list_from_api_response(raw_json, _endpoint_name):
     if not raw_json:
         return []
     
-    # Patrón: {'data': {'records': [...]}} (el que funcionó con hero-position/)
+    # Patrón: {'data': {'records': [...]}}
     if isinstance(raw_json, dict) and 'data' in raw_json and 'records' in raw_json['data'] and isinstance(raw_json['data']['records'], list):
         return raw_json['data']['records']
         
@@ -109,7 +108,7 @@ def data_extraction_pipeline():
     
     print(f"\n✔️ Extracción de posiciones exitosa. Héroes encontrados: {len(df_positions)}.")
     
-    # 2. **GENERACIÓN DE ID:** Creamos la lista de IDs secuenciales (1 a 130)
+    # 2. **GENERACIÓN DE ID:** Creamos la lista de IDs secuenciales
     hero_ids = list(range(1, 131)) 
     df_rates = fetch_all_hero_rates(hero_ids)
     

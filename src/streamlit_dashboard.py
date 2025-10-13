@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 REPORT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'reports'))
 API_URL = "http://127.0.0.1:8000/data" 
 CSV_FILE_PATH = os.path.join(os.path.dirname(__file__), "data", "mobile_legends_data_historical.csv")
+CSV_URL = "https://github.com/STpipa/MLBB-EDA-Project/blob/main/data/mobile_legends_data_historical.csv"
 
 os.makedirs(REPORT_DIR, exist_ok=True)
 
@@ -67,25 +68,13 @@ def extract_latest_ban_rate(data_str):
 # ----------------------------------------------------
 
 @st.cache_data 
-def load_data_from_api():
-    """ # Intentar cargar desde API """
+def load_data():
     try:
-        response = requests.get(API_URL, timeout=5)
-        response.raise_for_status()
-        data = response.json()
-        df = pd.DataFrame(data)
-        df['extraction_date'] = pd.to_datetime(df['extraction_date'])
-        st.info("Datos cargados desde API.")
+        df = pd.read_csv(CSV_URL)
+        # ... resto de tu parseo
         return df
     except Exception as e:
-        st.error(f"No se pudieron cargar los datos desde la API: {e}")
-        st.info("Se cargará el CSV local como respaldo...")
-        # Intentar cargar CSV
-        try:
-            df = pd.read_csv(CSV_FILE_PATH)
-        except FileNotFoundError:
-            st.error(f"❌ Archivo histórico '{CSV_FILE_PATH}' no encontrado.")
-            return pd.DataFrame()
+        st.error(f"No se pudieron cargar los datos: {e}")
         return pd.DataFrame()
 
     # --- Aplicación de Parseo y Creación de Columnas ---
@@ -125,7 +114,7 @@ def run_dashboard():
 
     # 3.1 Cargar datos
     
-    df = load_data_from_api()
+    df = load_data()
     if df.empty:
         st.stop()  # Termina si no hay datos
         

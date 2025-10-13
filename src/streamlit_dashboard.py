@@ -70,38 +70,32 @@ def extract_latest_ban_rate(data_str):
 @st.cache_data 
 def load_data():
     try:
-        df = pd.read_csv(CSV_URL)
-        # ... resto de tu parseo
+        df = pd.read_csv(CSV_URL, quotechar='"', engine='python')
+        # --- Aplicación de Parseo y Creación de Columnas ---
+    
+        # 1. Aplicar funciones de parseo a la columna CRUDA 'data'
+        df['win_rate'] = df['data'].apply(extract_latest_win_rate)
+        df['ban_rate'] = df['data'].apply(extract_latest_ban_rate)
+        # 2. Renombrar columnas clave y crear la columna de rol
+        df.rename(columns={'hero.data.name': 'hero_name', 
+                    'hero.data.sortid': 'raw_roles'}, inplace=True)
+                    
+        df['role'] = df['raw_roles'].apply(extract_roles) # Crea la columna 'role'
+        df['primary_role'] = df['role'].apply(lambda x: x.split(',')[0].strip())
+    
+        # 3. Conversiones y limpieza final
+        df['win_rate_pct'] = df['win_rate'] * 100
+        df['ban_rate_pct'] = df['ban_rate'] * 100
+        df['extraction_date'] = pd.to_datetime(df['extraction_date'])
+
+        # Seleccionamos las columnas útiles y limpiamos NaN
+        df_clean = df[['hero_name', 'win_rate_pct', 'ban_rate_pct', 
+                'extraction_date', 'role']].copy()
+        df_clean.dropna(subset=['win_rate_pct', 'ban_rate_pct'], inplace=True)
         return df
     except Exception as e:
         st.error(f"No se pudieron cargar los datos: {e}")
         return pd.DataFrame()
-
-    # --- Aplicación de Parseo y Creación de Columnas ---
-    
-    # 1. Aplicar funciones de parseo a la columna CRUDA 'data'
-    df['win_rate'] = df['data'].apply(extract_latest_win_rate)
-    df['ban_rate'] = df['data'].apply(extract_latest_ban_rate)
-    
-    # 2. Renombrar columnas clave y crear la columna de rol
-    df.rename(columns={'hero.data.name': 'hero_name', 
-                    'hero.data.sortid': 'raw_roles'}, inplace=True)
-                    
-    df['role'] = df['raw_roles'].apply(extract_roles) # Crea la columna 'role'
-    df['primary_role'] = df['role'].apply(lambda x: x.split(',')[0].strip())
-    
-    # 3. Conversiones y limpieza final
-    df['win_rate_pct'] = df['win_rate'] * 100
-    df['ban_rate_pct'] = df['ban_rate'] * 100
-    df['extraction_date'] = pd.to_datetime(df['extraction_date'])
-
-    # Seleccionamos las columnas útiles y limpiamos NaN
-    df_clean = df[['hero_name', 'win_rate_pct', 'ban_rate_pct', 
-                'extraction_date', 'role']].copy()
-    df_clean.dropna(subset=['win_rate_pct', 'ban_rate_pct'], inplace=True)
-
-    return df_clean
-
 
 # ----------------------------------------------------
 # --- 3. LAYOUT DEL DASHBOARD ---

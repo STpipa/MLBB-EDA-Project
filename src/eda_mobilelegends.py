@@ -3,16 +3,19 @@ import pandas as pd
 import time
 import os
 import sys
+import json
 from datetime import datetime
+import csv   
 
-
-# Obtener la ruta del directorio padre
+# ---------------------------------------------------
+# Añadir el directorio padre al path para importar config
+# ---------------------------------------------------
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 # Añadir el directorio padre al path de Python para que pueda encontrar la carpeta 'config/'
 sys.path.append(parent_dir)
 
-from config.config import API_BASE_URL
+from config.config import API_BASE_URL # Debe existir este archivo con la URL base de la API
 
 # --- FUNCIONES AUXILIARES ---
 
@@ -80,7 +83,7 @@ def fetch_all_hero_rates(hero_ids):
 # --- PIPELINE PRINCIPAL ---
 
 def data_extraction_pipeline():
-    """
+    """ 
     Orquesta la extracción, combinación y guardado de datos.
     """
     
@@ -137,6 +140,9 @@ def data_extraction_pipeline():
         # Eliminamos duplicados si hay héroes listados más de una vez
         df_final.drop_duplicates(subset=['hero_id'], inplace=True) 
 
+        if 'data' in df_final.columns:
+            df_final['data'] = df_final['data'].apply(lambda x: json.dumps(x, ensure_ascii=False))
+
         print(f"✔️ Combinación (Merge) exitosa. Filas finales (Héroes únicos): {len(df_final)}")
         
         # 4. Guardado de los datos limpios en modo histórico
@@ -151,19 +157,18 @@ def data_extraction_pipeline():
         # Aseguramos que la carpeta de datos exista
         os.makedirs(data_dir, exist_ok=True)
 
-        if not os.path.exists(historica_file_path):
-            # Primera vez: crear el archivo con encabezados
-            df_final.to_csv(historica_file_path, mode='w', index=False, header=True)
-            print(f"💾 Archivo histórico creado: '{historica_file_path}'")
-
-        else:
-            # Si ya existe, agregar datos sin repetir encabezados
-            df_final.to_csv(historica_file_path, mode='a', index=False, header=False)
-            print(f"💾 Datos agregados al archivo histórico: '{historica_file_path}'")
-
-        # 4c. Guardar también la version más reciente para el EDA rápido (sobre-escribe)
-        df_final.to_csv("../data/mobile_legends_data.csv", index=False) 
-        print("💾 Datos recientes guardados en '../data/mobile_legends_data.csv' para el EDA inmediato")
+        # Guardar CSV histórico con comillas para evitar problemas
+        df_final.to_csv(historica_file_path,
+                        mode='a' if os.path.exists(historica_file_path) else 'w',
+                        index=False,
+                        header=not os.path.exists(historica_file_path),
+                        quoting=csv.QUOTE_ALL)
+        print(f"💾 Datos guardados en archivo histórico: {historica_file_path}")
+        
+        # CSV limpio para EDA rápido / Streamlit
+        clean_csv_path = os.path.join(data_dir, "mobile_legends_data_clean.csv")
+        df_final.to_csv(clean_csv_path, index=False, quoting=csv.QUOTE_ALL)
+        print(f"💾 CSV limpio guardado para EDA/Streamlit: {clean_csv_path}")
 
         return df_final
         

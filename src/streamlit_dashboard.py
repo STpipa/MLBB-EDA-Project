@@ -3,22 +3,23 @@ import pandas as pd
 import plotly.express as px
 import ast 
 import numpy as np
-import requests
+import requests  
 from datetime import datetime
 import os
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from pandas import DataFrame 
 
 # ----------------------------------------------------------------------
-# --- CONFIGURACIÓN CRÍTICA DE RUTAS ---
+# -------------------- CONFIGURACIÓN DE RUTAS --------------------------
 # ----------------------------------------------------------------------
 
 # Se asume la estructura del proyecto: src/ (este archivo), data/, reports/
 REPORT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'reports'))
-API_URL = "http://127.0.0.1:8000/data" 
-CSV_FILE_PATH = os.path.join(os.path.dirname(__file__), "data", "mobile_legends_data_historical.csv")
-CSV_URL = "https://github.com/STpipa/MLBB-EDA-Project/blob/main/data/mobile_legends_data_historical.csv"
+CSV_FILE_PATH = os.path.join(os.path.dirname(__file__),"data", "mobile_legends_data_historical.csv")
+API_URL = "http://127.0.0.1:8000/data"  # Por si quieres usar la API en el futuro
+CSV_URL = "https://raw.githubusercontent.com/STpipa/MLBB-EDA-Project/main/data/mobile_legends_data_historical.csv"
 
 os.makedirs(REPORT_DIR, exist_ok=True)
 
@@ -69,9 +70,30 @@ def extract_latest_ban_rate(data_str):
 
 @st.cache_data 
 def load_data():
+    """Carga datos: primero intenta API, luego CSV local, luego CSV remoto"""
+    df = pd.DataFrame()
+    # --- Intentar API ---
     try:
-        df = pd.read_csv(CSV_URL, quotechar='"', engine='python')
-        # --- Aplicación de Parseo y Creación de Columnas ---
+        response = requests.get(API_URL, timeout=3)
+        response.raise_for_status()
+        data = response.json()
+        df = pd.DataFrame(data)
+        st.info("Datos cargados desde API local.")
+    except Exception:
+        st.warning("No se pudieron cargar los datos desde la API. Intentando CSV local...")
+        # --- Intentar CSV local ---
+        try:
+            df = pd.read_csv(CSV_FILE_PATH, quotechar='"', engine='python')
+            st.info("Datos cargados desde CSV histórico local.")
+        except Exception:
+            st.warning("CSV local no disponible. Intentando CSV remoto en GitHub...")
+            # --- Intentar CSV remoto ---
+            try:
+                df = pd.read_csv(CSV_URL, quotechar='"', engine='python')
+                st.info("Datos cargados desde CSV remoto en GitHub.")
+            except Exception as e:
+                st.error(f"No se pudieron cargar los datos: {e}")
+                return pd.DataFrame()
     
         # 1. Aplicar funciones de parseo a la columna CRUDA 'data'
         df['win_rate'] = df['data'].apply(extract_latest_win_rate)

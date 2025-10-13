@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import ast 
 import numpy as np
+import requests
 from datetime import datetime
 import os
 from typing import TYPE_CHECKING
@@ -15,8 +16,10 @@ if TYPE_CHECKING:
 
 # Se asume la estructura del proyecto: src/ (este archivo), data/, reports/
 REPORT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'reports'))
-DATA_DIR_RELATIVE = '../data' 
-DATA_FILE_NAME = os.path.join(os.path.dirname(__file__), "data", "mobile_legends_data_historical.csv")
+API_URL = "http://127.0.0.1:8000/data" 
+CSV_FILE_PATH = os.path.join(os.path.dirname(__file__), "data", "mobile_legends_data_historical.csv")
+
+os.makedirs(REPORT_DIR, exist_ok=True)
 
 # ----------------------------------------------------------------------
 # --- 1. FUNCIONES AUXILIARES GLOBALES Y LIMPIEZA (Corregidas) ---
@@ -64,14 +67,26 @@ def extract_latest_ban_rate(data_str):
 # ----------------------------------------------------
 
 @st.cache_data 
-def load_data(file_path='data/mobile_legends_data_historical.csv'):
-    """ Carga y aplica limpieza básica al dataset historico. """
+def load_data_from_api():
+    """ # Intentar cargar desde API """
     try:
-        df = pd.read_csv(file_path)
-    except FileNotFoundError:
-        st.error(f"❌ Error: Archivo histórico '{file_path}' no encontrado.")
-        st.info("Asegúrate de ejecutar 'eda_mobilelegends.py' al menos una vez.")
-        return pd.DataFrame() 
+        response = requests.get(API_URL, timeout=5)
+        response.raise_for_status()
+        data = response.json()
+        df = pd.DataFrame(data)
+        df['extraction_date'] = pd.to_datetime(df['extraction_date'])
+        st.info("Datos cargados desde API.")
+        return df
+    except Exception as e:
+        st.error(f"No se pudieron cargar los datos desde la API: {e}")
+        st.info("Se cargará el CSV local como respaldo...")
+        # Intentar cargar CSV
+        try:
+            df = pd.read_csv(CSV_FILE_PATH)
+        except FileNotFoundError:
+            st.error(f"❌ Archivo histórico '{CSV_FILE_PATH}' no encontrado.")
+            return pd.DataFrame()
+        return pd.DataFrame()
 
     # --- Aplicación de Parseo y Creación de Columnas ---
     
@@ -105,17 +120,19 @@ def load_data(file_path='data/mobile_legends_data_historical.csv'):
 
 def run_dashboard():
     st.set_page_config(page_title="MLBB Meta Dashboard", layout="wide") 
+    st.title("🛡️ MLBB: Análisis de Tendencias del Meta")
+
 
     # 3.1 Cargar datos
     
-    df = load_data('D:/MLBB-EDA-Project/data/mobile_legends_data_historical.csv')
-    
+    df = load_data_from_api()
     if df.empty:
-        return # Si no se cargaron datos (por FileNotFoundError), salimos
+        st.stop()  # Termina si no hay datos
+        
         
     # --- Contenido Principal ---
     
-    st.title("🛡️ MLBB: Análisis de Tendencias del Meta")
+    
     
     latest_date = df['extraction_date'].max().date()
     st.info(f"Mostrando datos hasta la última fecha de extracción: **{latest_date}**")

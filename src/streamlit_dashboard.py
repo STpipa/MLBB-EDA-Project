@@ -80,17 +80,17 @@ def load_data():
         df = pd.DataFrame(data)
         st.info("Datos cargados desde API local.")
     except Exception:
-        st.warning("No se pudieron cargar los datos desde la API. Intentando CSV local...")
+        # st.warning("No se pudieron cargar los datos desde la API. Intentando CSV local...")
         # --- Intentar CSV local ---
         try:
             df = pd.read_csv(CSV_FILE_PATH, quotechar='"', engine='python')
-            st.info("Datos cargados desde CSV histórico local.")
+            # st.info("Datos cargados desde CSV histórico local.")
         except Exception:
-            st.warning("CSV local no disponible. Intentando CSV remoto en GitHub...")
+            # st.warning("CSV local no disponible. Intentando CSV remoto en GitHub...")
             # --- Intentar CSV remoto ---
             try:
                 df = pd.read_csv(CSV_URL, quotechar='"', engine='python')
-                st.info("Datos cargados desde CSV remoto en GitHub.")
+                #st.info("Datos cargados desde CSV remoto en GitHub.")
             except Exception as e:
                 st.error(f"No se pudieron cargar los datos: {e}")
                 return pd.DataFrame()

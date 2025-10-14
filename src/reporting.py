@@ -115,13 +115,13 @@ def generate_report():
 
     # Top 5 Héroes con mayor Win Rate
     top_win_rate = df_latest.nlargest(5, 'win_rate_pct')
-    report_content.append("\n### 👑 Top 5 Héroes por Tasa de Victoria:")
+    report_content.append("\n 👑 Top 5 Héroes por Tasa de Victoria:")
     for _, row in top_win_rate.iterrows():
         report_content.append(f"- {row['hero_name']}: {row['win_rate_pct']:.2f}% Win Rate ({row['primary_role']})")
 
     # Top 5 Héroes con mayor Ban Rate
     top_ban_rate = df_latest.nlargest(5, 'ban_rate_pct')
-    report_content.append("\n### 🚫 Top 5 Héroes por Tasa de Ban:")
+    report_content.append("\n 🚫 Top 5 Héroes por Tasa de Ban:")
     for _, row in top_ban_rate.iterrows():
         report_content.append(f"- {row['hero_name']}: {row['ban_rate_pct']:.2f}% Ban Rate ({row['primary_role']})")
 
@@ -144,11 +144,11 @@ def generate_report():
         top_gainers = df_merged.nlargest(3, 'win_rate_change')
         top_losers = df_merged.nsmallest(3, 'win_rate_change')
 
-        report_content.append("\n### 🚀 Héroes con Mayor Ganancia de Win Rate (vs. última semana):")
+        report_content.append("\n 🚀 Héroes con Mayor Ganancia de Win Rate (vs. última semana):")
         for _, row in top_gainers.iterrows():
             report_content.append(f"- {row['hero_name']}: +{row['win_rate_change']:.2f} pp")
 
-        report_content.append("\n### 📉 Héroes con Mayor Pérdida de Win Rate (vs. última semana):")
+        report_content.append("\ 📉 Héroes con Mayor Pérdida de Win Rate (vs. última semana):")
         for _, row in top_losers.iterrows():
             report_content.append(f"- {row['hero_name']}: {row['win_rate_change']:.2f} pp")
             

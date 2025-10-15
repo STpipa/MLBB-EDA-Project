@@ -3,26 +3,25 @@
 Este reporte analiza los cambios más significativos en el meta del juego.
 
 
-### 👑 Top 5 Héroes por Tasa de Victoria:
+👑 Top 5 Héroes por Tasa de Victoria:
+- Diggie: 57.27% Win Rate (support)
+- Diggie: 57.27% Win Rate (support)
+- Diggie: 57.27% Win Rate (support)
 - Diggie: 57.27% Win Rate (support)
 - Natan: 57.14% Win Rate (Marksman)
-- Lolita: 56.57% Win Rate (support)
-- Irithel: 56.57% Win Rate (Marksman)
-- Alucard: 56.34% Win Rate (fighter)
 
-### 🚫 Top 5 Héroes por Tasa de Ban:
+🚫 Top 5 Héroes por Tasa de Ban:
+- Angela: 87.78% Ban Rate (support)
+- Angela: 87.78% Ban Rate (support)
+- Angela: 87.78% Ban Rate (support)
 - Angela: 87.78% Ban Rate (support)
 - Bane: 65.42% Ban Rate (fighter)
-- Yi Sun-shin: 65.07% Ban Rate (assassin)
-- Natan: 53.38% Ban Rate (Marksman)
-- Aamon: 50.02% Ban Rate (assassin)
 
-### 🚀 Héroes con Mayor Ganancia de Win Rate (vs. última semana):
+🚀 Héroes con Mayor Ganancia de Win Rate (vs. última semana):
 - Aulus: +0.24 pp
 - Aulus: +0.24 pp
-- Karrie: +0.19 pp
-
-### 📉 Héroes con Mayor Pérdida de Win Rate (vs. última semana):
+- Aulus: +0.24 pp
+\📉 Héroes con Mayor Pérdida de Win Rate (vs. última semana):
 - Freya: -0.22 pp
 - Freya: -0.22 pp
-- Diggie: -0.21 pp
+- Freya: -0.22 pp

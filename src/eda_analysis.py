@@ -12,7 +12,9 @@ from pandas import DataFrame
 # ----------------------------------------------------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE_PATH = os.path.join(BASE_DIR,"..","data","mobile_legends_data_historical.csv")
-REPORT_DIR = os.path.abspath(os.path.join(BASE_DIR,"..","reports")) # Carpeta para guardar los reportes/gráficos
+# REPORT_DIR = os.path.abspath(os.path.join(BASE_DIR,"..","reports")) # Carpeta para guardar los reportes/gráficos
+REPORT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'reports'))
+
 
 # Asegurarse de que la carpeta de reportes exista
 os.makedirs(REPORT_DIR, exist_ok=True)
@@ -138,6 +140,8 @@ def plot_win_rate_vs_ban_rate(df: DataFrame, current_date: str):
     plt.close()
     print(f"📈 Gráfico de Win Rate vs Ban Rate guardado en {os.path.join(REPORT_DIR, f'{current_date}_ban_vs_win_rate.png')}")
 
+
+    
 def plot_win_rate_by_role(df, current_date):
     """Genera un box plot del Win Rate por rol principal y lo guarda."""
     plt.figure(figsize=(12, 8))

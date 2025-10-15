@@ -23,10 +23,6 @@ CSV_URL = "https://raw.githubusercontent.com/STpipa/MLBB-EDA-Project/main/data/m
 
 os.makedirs(REPORT_DIR, exist_ok=True)
 
-# ----------------------------------------------------------------------
-# --- 1. FUNCIONES AUXILIARES GLOBALES Y LIMPIEZA (Corregidas) ---
-# ----------------------------------------------------------------------
-
 # ----------------------------------------------------
 # --- 1. FUNCIONES AUXILIARES GLOBALES ---
 # ----------------------------------------------------
@@ -68,8 +64,8 @@ def extract_latest_ban_rate(data_str):
 # --- 2. FUNCIÓN DE CARGA Y CACHÉ ---
 # ----------------------------------------------------
 
-@st.cache_data 
-def load_data():
+@st.cache_data(show_spinner=False)
+def load_data() -> pd.DataFrame:
     """Carga datos: primero intenta API, luego CSV local, luego CSV remoto"""
     df = pd.DataFrame()
     # --- Intentar API ---

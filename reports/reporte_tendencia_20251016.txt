@@ -1,0 +1,27 @@
+--- Reporte de Tendencia del Meta de MLBB (2025-10-16) ---
+
+Este reporte analiza los cambios más significativos en el meta del juego.
+
+
+👑 Top 5 Héroes por Tasa de Victoria:
+- Natan: 57.12% Win Rate (Marksman)
+- Diggie: 57.10% Win Rate (support)
+- Irithel: 56.60% Win Rate (Marksman)
+- Lolita: 56.57% Win Rate (support)
+- Alucard: 56.36% Win Rate (fighter)
+
+🚫 Top 5 Héroes por Tasa de Ban:
+- Angela: 87.36% Ban Rate (support)
+- Bane: 67.58% Ban Rate (fighter)
+- Yi Sun-shin: 65.84% Ban Rate (assassin)
+- Natan: 52.84% Ban Rate (Marksman)
+- Aamon: 50.30% Ban Rate (assassin)
+
+🚀 Héroes con Mayor Ganancia de Win Rate (vs. última semana):
+- Belerick: +0.20 pp
+- Hanabi: +0.20 pp
+- Aulus: +0.18 pp
+\📉 Héroes con Mayor Pérdida de Win Rate (vs. última semana):
+- Freya: -0.30 pp
+- Diggie: -0.17 pp
+- Faramis: -0.16 pp

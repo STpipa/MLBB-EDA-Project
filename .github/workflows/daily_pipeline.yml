@@ -1,0 +1,39 @@
+name: Daily MLBB Data Pipeline
+
+on:
+  # Define la frecuencia de ejecución diaria
+  schedule:
+    # Puedes usar un cron job para esto. 
+    - cron: '0 0 * * *'
+  # Permite ejecutar el workflow manualmente desde la interfaz de GitHub
+  workflow_dispatch:
+
+jobs:
+  run_pipeline:
+    runs-on: ubuntu-latest # Usa una máquina virtual de Linux
+    
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' # Asegúrate de usar la versión correcta 
+
+      - name: Instalar dependencias
+        
+        run: pip install -r requirements.txt
+
+      - name: 🚀 Ejecutar el Pipeline Diario
+        
+        # Asumiendo que pipeline_daily.py está en la raíz o en src/
+        run: python src/pipeline_daily.py
+
+      - name: 💾 Commit y Push de los datos actualizados
+        # Necesario para que el Streamlit Cloud Dashboard acceda a los archivos actualizados
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: '🤖 ETL: Datos y reportes actualizados (Job Diario)'
+          # Los archivos que generas y deben ser subidos
+          file_pattern: 'data/*.csv reports/*.txt reports/*.png'

@@ -8,6 +8,10 @@ on:
   # Permite ejecutar el workflow manualmente desde la interfaz de GitHub
   workflow_dispatch:
 
+# 🚨 BLOQUE DE PERMISOS CRÍTICO 🚨
+permissions:
+  contents: write # ¡Esto le da permiso al bot para hacer push!
+
 jobs:
   run_pipeline:
     runs-on: ubuntu-latest # Usa una máquina virtual de Linux

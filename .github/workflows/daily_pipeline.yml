@@ -39,6 +39,16 @@ jobs:
         # Asumiendo que pipeline_daily.py está en la raíz o en src/
         run: python src/pipeline_daily.py
 
+        # 🚨 Commit Temporal de Archivos Generados 🚨
+      - name: Commit local de archivos generados
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "GitHub Actions Bot"
+          # Añade los archivos que tu pipeline acaba de crear/modificar
+          git add data/*.csv reports/*.txt reports/*.png
+          # Intenta el commit. '|| true' asegura que el job no falle si no hay cambios.
+          git commit -m "Temp commit de datos generados para pull" || true
+
       - name: 🔄 Pull de cambios remotos
         # Descarga y fusiona los cambios previos (los del bot anterior)
         run: git pull origin main

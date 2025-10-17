@@ -39,6 +39,10 @@ jobs:
         # Asumiendo que pipeline_daily.py está en la raíz o en src/
         run: python src/pipeline_daily.py
 
+      - name: 🔄 Pull de cambios remotos
+        # Descarga y fusiona los cambios previos (los del bot anterior)
+        run: git pull origin main
+
       - name: 💾 Commit y Push de los datos actualizados
         # Necesario para que el Streamlit Cloud Dashboard acceda a los archivos actualizados
         uses: stefanzweifel/git-auto-commit-action@v5

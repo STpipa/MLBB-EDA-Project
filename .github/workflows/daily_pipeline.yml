@@ -25,8 +25,13 @@ jobs:
         
         run: pip install -r requirements.txt
 
+        # 🚨 Configurar PYTHONPATH 🚨
+      - name: Set PYTHONPATH
+        # Esto añade el directorio actual (la raíz del proyecto) al PYTHONPATH
+        # para que Python pueda encontrar 'src' al usar 'from src.module import...'
+        run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
+
       - name: 🚀 Ejecutar el Pipeline Diario
-        
         # Asumiendo que pipeline_daily.py está en la raíz o en src/
         run: python src/pipeline_daily.py
 

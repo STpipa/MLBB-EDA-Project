@@ -1,9 +1,7 @@
 name: Daily MLBB Data Pipeline
 
 on:
-  # Define la frecuencia de ejecución diaria
   schedule:
-    # Puedes usar un cron job para esto. 
     - cron: '0 0 * * *'
   # Permite ejecutar el workflow manualmente desde la interfaz de GitHub
   workflow_dispatch:
@@ -60,3 +58,4 @@ jobs:
           commit_message: '🤖 ETL: Datos y reportes actualizados (Job Diario)'
           # Los archivos que generas y deben ser subidos
           file_pattern: 'data/*.csv reports/*.txt reports/*.png'
+          commit_author: STpipa <114825531+STpipa@users.noreply.github.com>

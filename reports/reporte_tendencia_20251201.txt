@@ -1,0 +1,27 @@
+--- Reporte de Tendencia del Meta de MLBB (2025-12-01) ---
+
+Este reporte analiza los cambios más significativos en el meta del juego.
+
+
+👑 Top 5 Héroes por Tasa de Victoria:
+- Gloo: 56.79% Win Rate (tank)
+- Lolita: 55.64% Win Rate (support)
+- Sun: 55.03% Win Rate (fighter)
+- Ixia: 54.62% Win Rate (Marksman)
+- Irithel: 54.59% Win Rate (Marksman)
+
+🚫 Top 5 Héroes por Tasa de Ban:
+- Aamon: 63.43% Ban Rate (assassin)
+- Yi Sun-shin: 60.05% Ban Rate (assassin)
+- Angela: 59.01% Ban Rate (support)
+- Hayabusa: 58.61% Ban Rate (assassin)
+- Alice: 55.13% Ban Rate (tank)
+
+🚀 Héroes con Mayor Ganancia de Win Rate (vs. última semana):
+- Freya: +2.16 pp
+- Suyou: +1.61 pp
+- Natalia: +1.39 pp
+\📉 Héroes con Mayor Pérdida de Win Rate (vs. última semana):
+- Cici: -2.23 pp
+- Lancelot: -2.01 pp
+- Kimmy: -1.94 pp
